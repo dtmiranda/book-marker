@@ -3,9 +3,9 @@ import { AuthController } from "./auth.controller";
 import { AuthServive } from "./auth.service";
 
 @Module({
-  controllers:[AuthController],
-  providers:[AuthServive]
+  controllers: [AuthController],
+  providers: [AuthServive]
 })
-export class AuthModule{
+export class AuthModule {
 
 }
