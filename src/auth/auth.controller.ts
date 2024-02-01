@@ -6,16 +6,18 @@ import { AuthDto } from "./dto";
 export class AuthController {
   constructor(private authService: AuthServive) { }
 
-  @Post('signin')
-  signin(@Body() dto: AuthDto) {
-    console.log({ dto })
-
-    return this.authService.signin()
-  }
-
   @Post('signup')
-  signup() {
-    return this.authService.singnup()
+  signup(@Body() authDto: AuthDto) {
+    return this.authService.singnup(authDto)
   }
+
+  @Post('signin')
+  signin(@Body() authDto: AuthDto) {
+    console.log({ authDto })
+
+    return this.authService.signin(authDto)
+  }
+
+
 
 }
