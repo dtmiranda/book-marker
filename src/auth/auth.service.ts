@@ -4,12 +4,14 @@ import { AuthDto } from "./dto";
 import * as argon from 'argon2'
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { JwtService } from '@nestjs/jwt'
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class AuthServive {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private configService: ConfigService
   ) { }
 
   async singnup(authDto: AuthDto) {
@@ -25,12 +27,7 @@ export class AuthServive {
           hash,
         }
       })
-
-      //temporaly used to prevent showing hash
-      delete user.hash
-
-      //return the saved user
-      return user
+      return this.signToken(user.id, user.email)
 
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
@@ -66,10 +63,29 @@ export class AuthServive {
       throw new ForbiddenException('Credential incorret')
     }
 
-    //send back the user 
-    delete user.hash
-    return user
+    return this.signToken(user.id, user.email)
   }
 
 
+  async signToken(
+    userId: number,
+    email: string
+  ): Promise<{ access_token: string }> {
+    const payload = {
+      sub: userId,
+      email
+    }
+
+    const secret = this.configService.get('JWT_SECRET')
+
+    const token = await this.jwtService.signAsync(
+      payload, {
+      expiresIn: '15m',
+      secret: secret
+    })
+
+    return {
+      access_token: token
+    }
+  }
 }
