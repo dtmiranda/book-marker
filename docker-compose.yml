@@ -10,5 +10,16 @@ services:
       POSTGRES_DB: nest
     networks:
       - dtmiranda
+
+  test-db:
+    image: postgres:13
+    ports:
+      - 5435:5434
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nest
+    networks:
+      - dtmiranda
 networks:
   dtmiranda:
