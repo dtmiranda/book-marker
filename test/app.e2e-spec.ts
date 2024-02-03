@@ -38,22 +38,64 @@ describe('App e2e test', () => {
 
 
   describe('Auth', () => {
+    const dto: AuthDto = {
+      email: 'catxupa@mail.com',
+      password: 'test'
+    }
     describe('Signup', () => {
-      it('Should signin', () => {
-        const dto: AuthDto = {
-          email: 'catxupa@mail.com',
-          password: 'test'
-        }
+      it('Should throw exception if email is empty', () => {
+        return pactum
+          .spec()
+          .post('/auth/signup',)
+          .withBody({
+            password: dto.password
+          })
+          .expectStatus(400)
+      });
+
+      it('Should throw exception if password is empty', () => {
+        return pactum
+          .spec()
+          .post('/auth/signup',)
+          .withBody({
+            email: dto.email
+          })
+          .expectStatus(400)
+      });
+
+      it('Should throw exception if no body provided', () => {
+        return pactum
+          .spec()
+          .post('/auth/signup',)
+          .expectStatus(400)
+      });
+
+      it('Should signup', () => {
         return pactum
           .spec()
           .post('/auth/signup',)
           .withBody(dto)
           .expectStatus(201)
-          .inspect()///To see the output
+        //.inspect()///To see the output
       })
     })
     describe('Signin', () => {
-      it.todo('Should signin')
+      it('Should throw exception if  email is empty', () => {
+        return pactum
+          .spec()
+          .post('/auth/signin',)
+          .withBody(dto)
+          .expectStatus(400)
+      });
+
+      it('Should signin', () => {
+        return pactum
+          .spec()
+          .post('/auth/signin',)
+          .withBody(dto)
+          .expectStatus(200)
+        //.inspect()///To see the output
+      })
     })
   })
 
