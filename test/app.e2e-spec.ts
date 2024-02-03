@@ -80,11 +80,30 @@ describe('App e2e test', () => {
       })
     })
     describe('Signin', () => {
-      it('Should throw exception if  email is empty', () => {
+      it('Should throw exception if email is empty', () => {
         return pactum
           .spec()
           .post('/auth/signin',)
-          .withBody(dto)
+          .withBody({
+            password: dto.password
+          })
+          .expectStatus(400)
+      });
+
+      it('Should throw exception if password is empty', () => {
+        return pactum
+          .spec()
+          .post('/auth/signin',)
+          .withBody({
+            email: dto.email
+          })
+          .expectStatus(400)
+      });
+
+      it('Should throw exception if no body provided', () => {
+        return pactum
+          .spec()
+          .post('/auth/signin',)
           .expectStatus(400)
       });
 
@@ -94,14 +113,23 @@ describe('App e2e test', () => {
           .post('/auth/signin',)
           .withBody(dto)
           .expectStatus(200)
-        //.inspect()///To see the output
+          //.inspect()///To see the output
+          .stores('userAccessToken', 'access_token') //pickup access_token end put in userAccessToken
       })
     })
   })
 
   describe('User', () => {
     describe('Get me', () => {
-      it.todo('Should enter to user/me endpoint')
+      it('Should get current user', () => {
+        return pactum
+          .spec()
+          .get('/users/me')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAccessToken}'
+          })
+          .expectStatus(200)
+      })
     })
     describe('Edit User', () => {
       it.todo('Should edit user')
