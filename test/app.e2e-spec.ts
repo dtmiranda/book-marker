@@ -5,6 +5,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { AuthDto } from '../src/auth/dto';
 import { EditUserDto } from '../src/user/dto';
+import { CreateBookmarkDto } from '../src/bookmark/dto';
 
 describe('App e2e test', () => {
   let app: INestApplication;
@@ -132,11 +133,12 @@ describe('App e2e test', () => {
           .expectStatus(200)
       })
     })
+
     describe('Edit User', () => {
       it('Should edit user', () => {
         const dto: EditUserDto = {
-          firstName: "Carlos",
-          email: "catxupada@mail.com",
+          firstName: "Joao",
+          email: "catxupinha@mail.com",
 
         }
         return pactum
@@ -157,7 +159,39 @@ describe('App e2e test', () => {
   })
 
   describe('BookMarks', () => {
-    describe('Create bookmark', () => { })
+    describe('Get empty bookmark', () => {
+
+      it('Should get bookmarks', () => {
+        return pactum
+          .spec()
+          .get('/bookmarks')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAccessToken}'
+          })
+          .expectStatus(200)
+          .expectBody([])
+
+      })
+    })
+
+    describe('Create bookmark', () => {
+      const bookmarkDto: CreateBookmarkDto = {
+        title: 'Frist Name',
+        link: 'https://www.google.com'
+      }
+
+      it('Should get bookmarks', () => {
+        return pactum
+          .spec()
+          .post('/bookmarks')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAccessToken}'
+          })
+          .withBody(bookmarkDto)
+          .expectStatus(201)
+
+      })
+    })
     describe('Get bookmark', () => { })
     describe('Get bookmark by id', () => { })
     describe('Edit bookmark', () => { })
